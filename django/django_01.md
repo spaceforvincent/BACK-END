@@ -1,6 +1,6 @@
-# Django, The Web Framework
+# Django, The Web Framework 1
 
-<hr> 
+
 
 ### Web framework
 
@@ -111,7 +111,8 @@
 - {% include %} : 템플릿을 로드하고 현재 페이지로 렌더링. 템플릿 내에 다른 템플릿을 포함하는 방법
 
   - ex) base.html에 {% include '_nav.html' %} 사용
-  - 
+  
+    
 
 #### "철학 : 표현(template)과 로직(view)을 분리. 중복을 배제하자"
 
@@ -171,14 +172,17 @@
         path('hello/<str:name>/', views.hello, name='hello'),
     ]
     
+    #위처럼 app_name = 'articles'라고 적어주게 되면 url태그 사용 시 
+    #{%url 'articles:index' %} 형식으로 사용 가능해짐
+    #이는 articles라는 app에도 'index.html'가 있고 pages라는 app에도 'index.html'가 있을 시 구분할 때 유용
     ```
-
+  
     
-
+  
   - Naming URL patterns : 이제는 링크에 url을 직접 작성하는 것이 아니라 path() 함수의 name 인자를 정의해서 사용. url 설정에 정의된 특정한 경로들의 의존성 제거할 수 있음
-
+  
     - 각 path에 이름 지정한다고 생각하면 될듯
-
+  
     ```
     #urls.py
     path('index/', views.index, name='index')
@@ -188,6 +192,6 @@
     
     name이라는 value가 {% url '' %} 태그에 의해 호출됨
     ```
-
+  
     - {% url '' %} : 주어진 URL패턴 이름 및 선택적 매개 변수와 일치하는 절대 경로 주소를 반환. 템플릿에 URL을 하드코딩하지 않고도 링크를 출력하는 방법
     - 
