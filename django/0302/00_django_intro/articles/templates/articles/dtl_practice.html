@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h3>1. for</h3>
+{% for food in foods %}
+  <p>{{ food }}</p>
+{% endfor %}
+<hr>
+
+{% for food in foods %}
+  <p>{{ forloop.counter }} {{ food }}</p>
+{% endfor %}
+<hr>
+
+{% for user in empty_list %}
+  <p>{{ user }}</p>
+{% empty %}
+  <p>지금 가입한 유저가 없습니다.</p>
+{% endfor %}
+<hr>
+
+
+<h3>2. if</h3>
+{% if '짜장면' in foods %}
+  <p>짜장면엔 고추가루지 !</p>
+{% endif %}
+<hr>
+
+{% for food in foods %}
+  {% if forloop.first %}
+    <p>짜장면+고추가루</p>
+  {% else %}
+    <p>{{ food }}</p>
+  {% endif %}
+{% endfor %}
+<hr>
+
+<p>3. length filter 활용</p>
+{% for fruit in fruits %}
+  {% if fruit|length > 5 %}
+    <p>이름이 너무 길어요.</p>
+  {% else %}
+    <p>{{ fruit }}, {{ fruit|length }}</p>
+  {% endif %}
+{% endfor %}
+<hr>
+
+<h3>4. lorem ipsum</h3>
+{% lorem %}
+<hr>
+{% lorem 3 w %}
+<hr>
+{% lorem 4 w random %}
+<hr>
+{% lorem 2 p %}
+<hr>
+
+<h3>5. 글자 관련 필터</h3>
+<p>{{ 'ABC'|lower }}</p>
+<p>{{ 'i love you'|title }}</p>
+<p>{{ foods|random }}</p>
+<hr>
+
+<h3>6. 연산</h3>
+<p>{{ 4|add:6 }}</p>
+<hr>
+
+<h3>7. 다양한 날짜 표현</h3>
+{% now "DATETIME_FORMAT" %}<br>
+{% now "SHORT_DATETIME_FORMAT" %}<br>
+{% now "DATE_FORMAT" %}<br>
+{% now "SHORT_DATE_FORMAT" %}
+<hr>
+{% now "Y년 m월 d일 (D) h:i" %}
+<hr>
+{% now "Y" as current_year %}
+Copyright {{ current_year }}
+<hr>
+
+<a href="{% url 'articles:index' %}">뒤로</a>
+{% endblock content %}
