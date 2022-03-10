@@ -180,7 +180,7 @@
 
   4. articles/templates/articles/detail.html
 
-  ![detail](./assets/index.png)
+  ![detail](./assets/detail.png)
 
   ```django
   {% extends 'base.html' %}
@@ -206,7 +206,7 @@
 
   5. articles/templates/articles/new.html
 
-  ![new](./assets/index.png)
+  ![new](./assets/new.png)
 
   
 
@@ -232,7 +232,7 @@
 
   6. articles/templates/articles/edit.html
 
-  ![edit](./assets/index.png)
+  ![edit](./assets/edit.png)
 
   ```django
   {% extends 'base.html' %}
