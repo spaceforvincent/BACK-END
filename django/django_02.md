@@ -24,11 +24,11 @@
 
 ```
 #articles/models.py
-class Article(models.Model):
+class Article(models.Model): #테이블
 	#CharField : 길이의 제한이 있는 문자열, max_length는 필수 인자
-	title = models.CharField(max_length=10) 
+	title = models.CharField(max_length=10) #필드 
 	#TextField : 글자의 수가 많을 때 사용
-	content = models.TextField()
+	content = models.TextField() #필드
 ```
 
 *DateField's options : auto_now_add(최초 생성일자), auto_now(최종 수정일자)
@@ -169,6 +169,66 @@ article.delete()
   - admin.py는 관리자 사이트에 Article 객체가 관리자 인터페이스를 가지고 있다는 것을 알려주는 것
 
 ### CRUD with views
+
+- CRUD 활용하여 게시판 만드는 순서
+
+  - python -m venv venv
+
+  - source venv/Scripts/activate
+
+  - pip install django==3.2.12
+
+  - django-admin startproject crud .
+
+  - python manage.py startapp articles
+
+  - settingspy -> installed_app에 articles 추가
+
+  - 프로젝트, 앱 디렉토리와 동등한 위치에 templates 폴더 생성 후 base.html만들기
+
+  - settings.py -> templates -> DIRS : BASE_DIR / 'templates'
+
+  - base.html에 부트스트랩 적용하고 블록 설정
+
+  - models.py 작성
+
+    ```
+    #articles/models.py
+    class Article(models.Model):
+    	title = models.CharField(max_length=10) 
+    	content = models.TextField()
+    ```
+
+  - python manage.py makemigrations 후 migrations/0001_initial.py 생성 확인
+
+  - python manage.py migrate (0001_initial.py를 실제 DB에 반영)
+
+  - vscode sqlite 확장 프로그램을 통해 확인
+
+  - python manage.py showmigrations 통해 설계도들이 migrate 됐는지 여부 확인 (생략 가능)
+
+  - model 수정하려면 추가 모델 필드 작성 후 makemigrations -> migrate
+
+    (설계도 여러개 만들다가 sql문 꼬였을 시, 다 삭제하고 다시 makemigrations하는게 편함)
+
+  - pip install ipython, pip install django-extensions
+
+  - settings.py로 가서 'django_extensions' 앱 등록
+
+  - python manage.py shell_plus (이곳에서 DB API 사용 가능, shell 종료하려면 exit() 입력) 
+
+  - python manage.py createsuperuser (관리자 계정 생성)
+
+  - admin.py에 model 등록
+
+    ```
+    from django.contrib import admin
+    from .models import Article
+    
+    admin.site.register(Article)
+    ```
+
+    
 
 - csrf_token template tag (http method를 post로 설정한 경우 사용)
 

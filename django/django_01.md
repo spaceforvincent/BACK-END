@@ -105,7 +105,7 @@
   - {% block content %} ~{% endblock content %} : 하위 템플릿이 채울 수 있는 공간
   - 작성순서
     - settings.py -> TEMPLATES의 'DIRS' 부분에 [BASE_DIR / 'templates'] 작성 (app_name/templates 디렉토리 외 추가 경로 설정하는 작업)
-    - "프로젝트" 밑에 templates폴더 만들어 base.html 작성 (부트스트랩이나 간단한 navbar)
+    - 프로젝트 및 앱 디렉토리와 동등한 위치에 templates폴더 만들어 base.html 작성 (부트스트랩이나 간단한 navbar)
     - 어플의 템플릿(하위 템플릿)으로 와서 최상단에 {% extends 'base.html' %} 작성 후 {% block content %} ~{% endblock content %} 사이에 표시할 내용 작성
 
 - {% include %} : 템플릿을 로드하고 현재 페이지로 렌더링. 템플릿 내에 다른 템플릿을 포함하는 방법
@@ -194,4 +194,5 @@
     ```
   
     - {% url '' %} : 주어진 URL패턴 이름 및 선택적 매개 변수와 일치하는 절대 경로 주소를 반환. 템플릿에 URL을 하드코딩하지 않고도 링크를 출력하는 방법
-    - 
+    
+      
