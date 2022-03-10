@@ -159,7 +159,7 @@
 
   3. articles/templates/articles/index.html
 
-  ![index](../../ssafy-HWS/HWS/0310/assets/index.png)
+  ![index](./assets/index.png)
 
   ```django
   {% extends 'base.html' %}
@@ -180,7 +180,7 @@
 
   4. articles/templates/articles/detail.html
 
-  ![detail](../../ssafy-HWS/HWS/0310/assets/detail.png)
+  ![detail](./assets/index.png)
 
   ```django
   {% extends 'base.html' %}
@@ -206,7 +206,7 @@
 
   5. articles/templates/articles/new.html
 
-  ![new](../../ssafy-HWS/HWS/0310/assets/new.png)
+  ![new](./assets/index.png)
 
   
 
@@ -232,7 +232,7 @@
 
   6. articles/templates/articles/edit.html
 
-  ![edit](../../ssafy-HWS/HWS/0310/assets/edit.png)
+  ![edit](./assets/index.png)
 
   ```django
   {% extends 'base.html' %}
