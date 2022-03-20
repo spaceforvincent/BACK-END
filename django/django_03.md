@@ -14,9 +14,9 @@
 
   - settingspy -> installed_app에 articles 추가
 
-  - 프로젝트, 앱 디렉토리와 동등한 위치에 templates 폴더 생성 후 base.html만들기
+  - <u>프로젝트, 앱 디렉토리와 동등한 위치</u>에 templates 폴더 생성 후 base.html만들기
 
-  - settings.py -> templates -> DIRS : BASE_DIR / 'templates'
+  - settings.py -> templates -> <u>DIRS : BASE_DIR / 'templates'</u>
 
   - base.html에 부트스트랩 적용하고 블록 설정
 
@@ -29,9 +29,9 @@
     	content = models.TextField()
     ```
 
-  - python manage.py makemigrations 후 migrations/0001_initial.py 생성 확인
+  - python manage.py <u>makemigrations</u> 후 migrations/0001_initial.py 생성 확인
 
-  - python manage.py migrate (0001_initial.py를 실제 DB에 반영)
+  - python manage.py <u>migrate</u> (0001_initial.py를 실제 DB에 반영)
 
   - vscode sqlite 확장 프로그램을 통해 확인
 
@@ -49,7 +49,7 @@
 
   - python manage.py createsuperuser (관리자 계정 생성)
 
-  - admin.py에 model 등록
+  - <u>admin.py에 model 등록</u>
 
     ```
     from django.contrib import admin

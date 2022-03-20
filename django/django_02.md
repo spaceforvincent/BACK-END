@@ -4,17 +4,17 @@
 
 ### Model
 
-- 단일한 데이터에 대한 정보를 가짐. 사용자가 저장하는 데이터들의 필수적인 필드들과 동작들을 포함. Django는 model을 통해 데이터에 접속하고 관리
+- 단일한 데이터에 대한 정보를 가짐. 사용자가 저장하는 데이터들의 필수적인 필드들과 동작들을 포함. <u>Django는 model을 통해 데이터에 접속하고 관리</u>
 
-- 일반적으로 각각의 model은 하나의 데이터베이스 테이블에 매핑됨
+- 일반적으로 <u>각각의 model은 하나의 데이터베이스 테이블에 매핑</u>됨
 
-- 웹 애플리케이션의 데이터를 구조화하고 조작하기 위한 도구
+- <u>웹 애플리케이션의 데이터를 구조화하고 조작</u>하기 위한 도구
 
-- Django에서는 ORM(Object-relational-mapping)을 활용하여 테이블(RDBMS)을 조작할 수 있음.
+- Django에서는 **ORM**(Object-relational-mapping)을 활용하여 테이블(RDBMS)을 조작할 수 있음.
 
   - SQL을 잘 알지 못해도 DB조작이 가능
 
-  - 절차적 접근이 아닌 객체 지향적 접근으로 인한 높은 생산성 (현대 웹 프레임워크의 요점)
+  - 절차적 접근이 아닌 <u>객체 지향적 접근</u>으로 인한 높은 생산성 (현대 웹 프레임워크의 요점)
 
   - But, ORM만으로 완전한 서비스를 구현하기 어려울 수 있음
 
@@ -37,22 +37,22 @@ class Article(models.Model): #테이블
 
 - Django가 Model에 생긴 변화를 반영하는 기법
 
-  - makemigrations : model을 변경한 것에 기반한 새로운 설계도를 만들 때 사용
-  - migrate : 설계도를 실제 DB에 반영, 변경사항 동기화
-  - sqlmigrate : 마이그레이션에 대한 SQL구문을 보기 위해 사용
-  - showmigrations : 프로젝트 전체의 마이그레이션 여부 확인
+  - **makemigrations** : model을 변경한 것에 기반한 <u>새로운 설계도를 만들 때</u> 사용
+  - **migrate** : <u>설계도를 실제 DB에 반영</u>, 변경사항 동기화
+  - **sqlmigrate** : <u>마이그레이션에 대한 SQL구문</u>을 보기 위해 사용
+  - **showmigrations** : <u>프로젝트 전체의 마이그레이션 여부 확인</u>
 
 *실제 DB TABLE은 vscode sqlite 확장 프로그램을 통해 확인 가능
 
-- model 수정 시에는 models.py에 추가 모델 필드 작성 후 makemigrations -> migrate
+- model 수정 시에는 models.py에 추가 모델 필드 작성 후 <u>makemigrations -> migrate</u>
 
   
 
 ### DB API
 
 - DB를 조작하기 위한 도구
-  - ClassName.Manager.QuerySet의 형식 (Article.objects.all())
-- QuerySet : 데이터베이스로부터 전달받은 객체 목록
+  - **ClassName.Manager.QuerySet**의 형식 (Article.objects.all())
+- **QuerySet** : 데이터베이스로부터 전달받은 객체 목록
 - Django shell
 
 ```
@@ -73,7 +73,7 @@ $ python manage.py shell_plus
 
 ### CRUD
 
-- Create
+- **Create**
 
   - 인스턴스 생성 후 인스턴스 변수 설정
 
@@ -100,11 +100,11 @@ $ python manage.py shell_plus
 
       
 
-- Read 
+- **Read** 
 
-  - Article.objects.all() : 현재 QuerySet의 복사본 반환
+  - Article.objects.all() : 현재 QuerySet의 복사본 반환(리스트 형태)
 
-  - Article.objects.get() : 주어진 lookup 매개변수와 일치하는 객체 반환(pk와 같이 고유성을 보장하는 조회에서 사용)
+  - Article.objects.get() : 주어진 lookup 매개변수와 일치하는 객체 반환(pk와 같이 고유성을 보장하는 조회에서 사용) (딕셔너리의 요소 하나를 반환)
 
   - Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 새 QuerySet 반환
 
@@ -117,7 +117,7 @@ $ python manage.py shell_plus
 
     
 
-- Update
+- **Update**
 
 ```
 #UPDATE articles SET title='byebye' WHERE id=1;
@@ -128,7 +128,7 @@ article.save()
 
 
 
-- Delete : QuerySet의 모든 행에 대해 SQL 삭제 쿼리 수행
+- **Delete** : QuerySet의 모든 행에 대해 SQL 삭제 쿼리 수행
 
 ```
 #save 필요 x
@@ -163,8 +163,7 @@ article.delete()
   
   #admin site에 register하겠다.
   admin.site.register(Article)
-  
   ```
-
-  - admin.py는 관리자 사이트에 Article 객체가 관리자 인터페이스를 가지고 있다는 것을 알려주는 것
+  
+- admin.py는 관리자 사이트에 Article 객체가 관리자 인터페이스를 가지고 있다는 것을 알려주는 것
 
