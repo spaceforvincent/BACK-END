@@ -167,3 +167,26 @@ article.delete()
   
 - admin.py는 관리자 사이트에 Article 객체가 관리자 인터페이스를 가지고 있다는 것을 알려주는 것
 
+
+
+
+
+- csrf_token template tag (http method를 post로 설정한 경우 사용)
+
+  - {% csrf_token %} : CSRF(사이트 간 요청 위조) 보호에 사용
+  - input type이 hidden으로 작성되며 value는 Django에서 생성한 hash값으로 설정됨
+  - 해당 태그 없이 요청을 보낸다면 Django 서버는 403 for bidden을 응답
+
+- redirect() : 새 URL로 요청을 다시 보냄
+
+  ```
+  def create(request):
+  	title = request.POST.get('title')
+  	content = request.POST.get('content')
+  	
+  	article = Article(title=title, content=content) #CREATE
+  	article.save()
+  	return redirect('articles:index')
+  ```
+
+  

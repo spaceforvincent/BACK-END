@@ -14,6 +14,17 @@
 
   - settingspy -> installed_app에 articles 추가
 
+  - urls.py(프로젝트)
+
+    ```python
+    urlpatterns = [
+    path('admin/', admin.site.urls),
+    path(''articles/', include('articles.urls')),
+    ]
+    ```
+
+    
+
   - <u>프로젝트, 앱 디렉토리와 동등한 위치</u>에 templates 폴더 생성 후 base.html만들기
 
   - settings.py -> templates -> <u>DIRS : BASE_DIR / 'templates'</u>
@@ -27,6 +38,8 @@
     class Article(models.Model):
     	title = models.CharField(max_length=10) 
     	content = models.TextField()
+    	created_at = models.DateTimeField(auto_now_add=True)
+        updated_at = models.DateTimeField(auto_now=True)
     ```
 
   - python manage.py <u>makemigrations</u> 후 migrations/0001_initial.py 생성 확인
@@ -60,25 +73,7 @@
 
     
 
-- csrf_token template tag (http method를 post로 설정한 경우 사용)
-
-  - {% csrf_token %} : CSRF(사이트 간 요청 위조) 보호에 사용
-  - input type이 hidden으로 작성되며 value는 Django에서 생성한 hash값으로 설정됨
-  - 해당 태그 없이 요청을 보낸다면 Django 서버는 403 for bidden을 응답
-
-- redirect() : 새 URL로 요청을 다시 보냄
-
-  ```
-  def create(request):
-  	title = request.POST.get('title')
-  	content = request.POST.get('content')
-  	
-  	article = Article(title=title, content=content) #CREATE
-  	article.save()
-  	return redirect('articles:index')
-  ```
-
-  1. urls.py
+  1. urls.py (articles 앱)
 
   ```django
   from django.urls import path

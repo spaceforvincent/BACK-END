@@ -107,7 +107,7 @@
   - 정의한 클래스 안에 Meta클래스를 선언하고, 어떤 모델을 기반으로 Form을 작성할 것인지에 대한 정보를 Meta 클래스에 지정
     - fields와 exclude는 동시에 사용할 수 없음
 
-```django
+```python
 def create(request):
     if request.method == 'POST': #저장
         form = ArticleForm(request.POST)
@@ -203,4 +203,149 @@ def update(request, pk):
   	fields = '__all__'
   ```
 
+
+
+
+### 수동으로 Form 작성하기
+
+- Rendering fields manually
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CREATE</h1>
+  <hr>
+  <form action="{% url 'articles:create' %}" method="POST">
+    {% csrf_token %}
+    <div>
+    {{form.title.errors}}
+    {{form.title.label_tag}}
+    {{form.title}}
+      </div>
+     <div>
+    {{form.content.errors}}
+    {{form.content.label_tag}}
+    {{form.content}}
+      </div>
+    <input type="submit">
+        
+  </form>
+<a href="{% url 'articles:index' %}">back</a>
+{% endblock content %}
+```
+
+- Looping over the form's fields
+
+```django
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CREATE</h1>
+  <hr>
+  <form action="{% url 'articles:create' %}" method="POST">
+    {% csrf_token %}
+    {% for field in form}
+    	{{field.title.errors}}
+    	{{field.title.label_tag}}
+    	{{field}}
+    {% endfor %}
+    <input type="submit">
+        
+  </form>
+<a href="{% url 'articles:index' %}">back</a>
+{% endblock content %}
+```
+
+
+
+- bootstrap과 함께 사용하기
+
+  - https://getbootstrap.com/docs/5.1/forms/overview/
+  - 핵심클래스: form-control (widget에 작성)
+
+  ```
+  # articles/forms.py
   
+  class ArticleForm(forms.ModelForm):
+  	title = forms.CharField(
+  	label='제목',
+  	widget=forms.TextInput(
+  	attrs={
+  	'class': 'my-title form-control',
+  	'placeholder': 'Enter the title',
+  	}
+  	),
+  	)
+  
+  	content = forms.CharField(
+  	label='내용',
+  	widget=forms.Textarea(
+  	attrs={
+  	'class': 'my-content form-control',
+  	'placeholder': 'Enter the content',
+  	'rows : 5',
+  	'cols' : 50,
+  	}
+  	),
+  	error_messages={
+  	'required': 'Please enter your content'
+  	}
+  )
+  	
+  	class Meta:
+  	model = Article
+  	fields = '__all__'
+  ```
+
+  
+
+- Django Bootstrap Library
+
+  - pip install django-bootstrap-v5
+  - settings.py에서 installed_apps에 <u>'bootstrap5'</u> 추가
+
+  ```html
+  #base.html
+  
+  {% load bootstrap5 %}
+  
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      {% bootstrap_css %}
+      <title>Document</title>
+  </head>
+  <body>
+  	<div class="container">
+      {% block content %}
+      {% endblock content %}
+  	</div>
+    {% bootstrap javascript %}
+  </body>
+  </html>
+  ```
+
+  ```
+  # update.html
+  {% extends 'base.html' %}
+  {% load bootstrap5 %}
+  
+  {% block content %}
+    <h1>UPDATE</h1>
+    <hr>
+    <form action="{% url 'articles:update' article.pk %}" method="POST">
+      {% csrf_token %}
+      {% bootstrap_form form layout='horizontal' %}
+      {% buttons submit="Submit" reset="Cancel" %}{% endbuttons %}
+    </form>
+    <a href="{% url 'articles:detail' article.pk %}">back</a>
+  {% endblock content %}
+  
+  ```
+
+  
+
