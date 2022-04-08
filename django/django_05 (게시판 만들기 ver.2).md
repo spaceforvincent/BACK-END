@@ -2,7 +2,7 @@
 
 - source venv/Scripts/activate
 
-- pip install django==3.2.12
+- pip install django==3.2.12 (pip install -r requirements.txt)
 
 - django-admin startproject crud .
 
@@ -13,17 +13,169 @@
 - urls.py(프로젝트)
 
 ```python
+from django.contrib import admin
+from django.urls import path, include
+
 urlpatterns = [
 path('admin/', admin.site.urls),
-path(''articles/', include('articles.urls')),
+path('articles/', include('articles.urls')),
 ]
 ```
+
+- urls.py(articles 앱)
+
+  - 이전 버전과 비교하면 'new(글쓰기 폼)', 'edit(글 수정 폼)' url 사라짐.
+
+  ```python
+  from django.urls import path
+  from . import views 
+  
+  app_name = 'articles'
+  urlpatterns = [
+      path('', views.index, name='index'),
+      path('create/', views.create, name = 'create'),
+      path('<int:pk>/', views.detail, name = 'detail'),
+      path('<int:pk>/delete/', views.delete, name='delete'),
+      path('<int:pk>/update/', views.update, name='update'),
+  ]
+  ```
+
+  
 
 - <u>프로젝트, 앱 디렉토리와 동등한 위치</u>에 templates 폴더 생성 후 base.html만들기
 
 - settings.py -> templates -> <u>DIRS : BASE_DIR / 'templates'</u>
 
 - base.html에 부트스트랩 적용하고 블록 설정
+
+  - Django Bootstrap Library
+    - pip install django-bootstrap-v5
+    - settings.py에서 installed_apps에 <u>'bootstrap5'</u> 추가
+
+
+  ```
+  {% load bootstrap5 %}
+  
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      {% bootstrap_css %}
+      <title>Document</title>
+  </head>
+  <body>
+  	<div class="container">
+      {% block content %}
+      {% endblock content %}
+  	</div>
+    {% bootstrap_javascript %}
+  </body>
+  </html>
+  ```
+
+
+
+- forms.py 작성
+
+```python
+from django import forms
+from .models import Articles
+
+class ArticleForm(forms.ModelForm):
+    title = forms.CharField(
+	    label='제목',
+	    widget=forms.TextInput(
+	        attrs={
+	        'class': 'my-title',
+	        'placeholder': 'Enter the title',
+	        }
+	    ),
+	)
+
+    content = forms.CharField(
+	    label='내용',
+	    widget=forms.Textarea(
+	        attrs={
+	        'class': 'my-content',
+	        'placeholder': 'Enter the content',
+	        'rows' : 5,
+	        'cols' : 50,
+	        }
+	    ),
+	    error_messages = {
+	    'required': 'Please enter your content'
+	    }
+    )
+    
+    class Meta:
+        model = Articles
+        fields = '__all__'
+
+```
+
+
+
+- views.py 작성
+
+```python
+from django.shortcuts import render, redirect
+from .models import Article
+from .forms import ArticleForm
+
+# Create your views here.
+def index(request):
+    articles = Article.objects.order_by('-pk')
+    context = {
+        'articles': articles,
+    }
+    return render(request, 'articles/index.html', context)
+
+def create(request):
+    if request.method == 'POST': #저장
+        form = ArticleForm(request.POST)
+        if form.is_valid(): #유효성 검증
+            article = form.save()
+            return redirect('articles:detail', article.pk)
+    else:
+        form = ArticleForm() #글쓰기 폼
+    context = {
+            'form': form
+        }
+    return render(request, 'articles/create.html', context)
+
+def detail(request, pk):
+    article = Article.objects.get(pk=pk)
+    context = {
+        'article': article,
+    }
+    return render(request, 'articles/detail.html', context)
+
+def update(request, pk):
+    article = Article.objects.get(pk=pk)
+    if request.method == 'POST' :
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('articles:detail', article.pk)
+    else:
+        form = ArticleForm(instance=article)
+    context = {
+        'form' : form,
+        'article' : article
+    }
+    return render(request, 'articles/update.html', context)
+
+def delete(request, pk):
+    article = Article.objects.get(pk=pk)
+    if request.method == 'POST':
+        article.delete()
+        return redirect('articles:index')
+    return redirect('articles:detail', article.pk)
+```
+
+
 
 - models.py 작성
 
@@ -69,89 +221,7 @@ path(''articles/', include('articles.urls')),
 
 
 
-
-
-1. urls.py(articles 앱)
-
-   - 이전 버전과 비교하면 'new(글쓰기 폼)', 'edit(글 수정 폼)' url 사라짐.
-
-   ```
-   from django.urls import path
-   from . import views 
-   
-   app_name = 'articles'
-   urlpatterns = [
-       path('', views.index, name='index'),
-       path('create/', views.create, name = 'create'),
-       path('<int:pk>/', views.detail, name = 'detail'),
-       path('<int:pk>/delete/', views.delete, name='delete'),
-       path('<int:pk>/update/', views.update, name='update'),
-   ]
-   ```
-
-   
-
-2. views.py
-
-   ```python
-   from django.shortcuts import render, redirect
-   from .models import Article
-   from .forms import ArticleForm
-   
-   # Create your views here.
-   def index(request):
-       articles = Article.objects.order_by('-pk')
-       context = {
-           'articles': articles,
-       }
-       return render(request, 'articles/index.html', context)
-   
-   def create(request):
-       if request.method == 'POST': #저장
-           form = ArticleForm(request.POST)
-           if form.is_valid(): #유효성 검증
-               article = form.save()
-               return redirect('articles:detail', article.pk)
-       else:
-           form = ArticleForm() #글쓰기 폼
-       context = {
-               'form': form
-           }
-       return render(request, 'articles/create.html', context)
-   
-   def detail(request, pk):
-       article = Article.objects.get(pk=pk)
-       context = {
-           'article': article,
-       }
-       return render(request, 'articles/detail.html', context)
-   
-   def update(request, pk):
-       article = Article.objects.get(pk=pk)
-       if request.method == 'POST' :
-           form = ArticleForm(request.POST, instance=article)
-           if form.is_valid():
-               form.save()
-               return redirect('articles:detail', article.pk)
-       else:
-           form = ArticleForm(instance=article)
-       context = {
-           'form' : form,
-           'article' : article
-       }
-       return render(request, 'articles/update.html', context)
-   
-   def delete(request, pk):
-       article = Article.objects.get(pk=pk)
-       if request.method == 'POST':
-           article.delete()
-           return redirect('articles:index')
-       return redirect('articles:detail', article.pk)
-   ```
-
-   
-
-3. articles/templates/articles/index.html
+1. articles/templates/articles/index.html
 
 ![index](./assets/index_ver2.png)
 
