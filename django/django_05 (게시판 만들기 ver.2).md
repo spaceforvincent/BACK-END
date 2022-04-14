@@ -8,7 +8,7 @@
 
 - python manage.py startapp articles
 
-- settingspy -> installed_app에 articles 추가
+- settings.py -> installed_app에 articles 추가
 
 - urls.py(프로젝트)
 

@@ -69,7 +69,7 @@
 - **urls.py** -> 처리할 요청 작성. HTTP request를 알맞은 view로 전달
   - path('hello/', views.(어플리케이션의) hello라는 요청이 들어오면 실행할 메서드)
 - **views.py** -> 요청을 수신하고 응답을 반환하는 함수 작성
-  - render(request,'hello.html') : 템플릿(응답을 위한 틀)을 이용해서 응답을 만들어주는 함수
+  - render(request,'hello.html') : 템플릿(응답을 위한 틀)을 이용해서 응답을 만들어주는 함수(html로 입력받아 해석해서 표준 출력 장치(모니터)로 출력)
 
 
 
@@ -85,10 +85,10 @@
 
   - <u>{{ variable }}</u> : render()를 사용하여 views.py에서 정의한 변수를 template파일로 넘겨 사용하는 것. 
   - <u>render()의 세번째 인자로 딕셔너리 형태</u>로 넘겨주며 여기서 정의한 key에 해당하는 문자열이 template에서 사용가능한 변수명이 됨.
-    
+  
 - <u>{{ variable|Filters }}</u> : 표시한 변수를 수정할 때 사용 
     - ex) lower, truncatewords:30
-  
+    
   - <u>{% tag %}</u> : 출력 테스트를 만들거나 반복 또는 논리를 수행하여 제어 흐름을 만드는 등 변수보다 복잡한 일을 수행
 
   - 일부 태그는 시작과 종료 태그가 필요
