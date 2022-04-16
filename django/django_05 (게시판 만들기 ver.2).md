@@ -53,7 +53,7 @@ path('articles/', include('articles.urls')),
     - settings.py에서 installed_apps에 <u>'bootstrap5'</u> 추가
 
 
-  ```
+  ```html
   {% load bootstrap5 %}
   
   <!DOCTYPE html>
@@ -307,58 +307,6 @@ def delete(request, pk):
   </form>
   <a href="{% url 'articles:detail' article.pk %}">back</a>
 {% endblock content %}
-
-```
-
-7. models.py
-
-```
-from django.db import models
-
-# Create your models here.
-class Article(models.Model):
-    title = models.CharField(max_length=10)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-```
-
-8. forms.py
-
-```python
-from django import forms
-from .models import Article
-
-class ArticleForm(forms.ModelForm):
-    title = forms.CharField(
-	    label='제목',
-	    widget=forms.TextInput(
-	        attrs={
-	        'class': 'my-title',
-	        'placeholder': 'Enter the title',
-	        }
-	    ),
-	)
-
-    content = forms.CharField(
-	    label='내용',
-	    widget=forms.Textarea(
-	        attrs={
-	        'class': 'my-content',
-	        'placeholder': 'Enter the content',
-	        'rows' : 5,
-	        'cols' : 50,
-	        }
-	    ),
-	    error_messages = {
-	    'required': 'Please enter your content'
-	    }
-    )
-    
-    class Meta:
-        model = Article
-        fields = '__all__'
 
 ```
 

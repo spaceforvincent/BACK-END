@@ -1,19 +1,19 @@
 ## Django Form Class
 
-- Form : Django의 유효성 검사 도구 중 하나로 외부의 악의적 공격 및 데이터 손상에 대한 중요한 방어 수단
+- Form : Django의 <u>유효성 검사 도구</u> 중 하나로 외부의 악의적 공격 및 데이터 손상에 대한 중요한 방어 수단
 
   - 렌더링을 위한 데이터 준비 및 재구성
   - 데이터에 대한 HTML forms 생성
   - 클라이언트로 받은 데이터 수신 및 처리
 
-- Form 선언하기
+- Form 선언하기 (Model 선언과 유사)
 
   ```django
   # articles/forms.py
   
   from django import forms
   
-  class ArticleForm(forms.Form):
+  class ArticleForm(forms.Form): #forms 라이브러리에서 파생된 form 클래스 상속받음
   	title = forms.CharField(max_length=10)
   	content = forms.CharField()
   
@@ -49,11 +49,11 @@
 - Django의 HTML input 요소 표현 방법
 
   - Form fields
-    - input에 대한 <u>유효성 검사 로직</u>을 처리하며 템플릿에서 직접 사용됨
+    - input에 대한 <u>유효성 검사 로직</u>을 처리하며 <u>템플릿에서 직접 사용</u>됨
   - Widgets
-    - <u>웹 페이지의 html input 요소 렌더링</u>
+    - <u>웹 페이지의 html input 요소 단순 렌더링</u>
     - GET/POST 딕셔너리에서 데이터 추출
-    - widgets은 반드시 Form fields에 할당됨
+    - <u>widgets은 반드시 Form fields에 할당됨</u>
 
   ```
   # articles/forms.py
@@ -89,22 +89,22 @@
 
 ## ModelForm
 
-- Model을 통해 Form Class를 만들 수 있음
+- Model을 통해 Form Class를 만들 수 있음!
 
   ```
   from django import forms
   from .models import Article
   
   
-  class ArticleForm (forms.ModelForm):
+  class ArticleForm (forms.ModelForm): #forms 라이브러리에서 파생된 ModelForm 클래스를 상속받음
   
-      class Meta :
+      class Meta : #데이터에 대한 데이터(nested class)
           model = Article
           fields = '__all__'
           # exclude = ['title', ]
   ```
 
-  - 정의한 클래스 안에 Meta클래스를 선언하고, 어떤 모델을 기반으로 Form을 작성할 것인지에 대한 정보를 Meta 클래스에 지정
+  - 정의한 클래스 안에 Meta클래스를 선언하고, 어떤 모델을 기반으로 Form을 작성할 것인지에 대한 정보를 Meta 클래스에 지정 (모델의 정보를 작성)
     - fields와 exclude는 동시에 사용할 수 없음
 
 ```python
@@ -142,9 +142,9 @@ def update(request, pk):
 
 - is_valid() : 유효성 검사를 실행하고 데이터가 유효한지 여부를 boolean으로 반환
 
-- save() : Form에 바인딩된 데이터에서 데이터베이스 객체를 만들고 저장
+- save() : Form에 바인딩된 데이터에서 <u>데이터베이스 객체를 만들고 저장</u>
 
-  - ModelForm의 하위 클래스는 기존 모델 인스턴스를 키워드 인자 instance로 받아들일 수 있음
+  - ModelForm의 하위 클래스는 <u>기존 모델 인스턴스를 키워드 인자 instance로 받아들일 수 있음</u>
 
     - instance 제공 : save()는 해당 인스턴스를 수정 (update)
     - instance 미제공 : save()는 지정된 모델의 새 인스턴스를 만듦 (create)
@@ -264,42 +264,39 @@ def update(request, pk):
   - https://getbootstrap.com/docs/5.1/forms/overview/
   - 핵심클래스: form-control (widget에 작성)
 
-  ```
-  # articles/forms.py
-  
+  ```django
+  #articles/forms.py
   class ArticleForm(forms.ModelForm):
-  	title = forms.CharField(
-  	label='제목',
-  	widget=forms.TextInput(
-  	attrs={
-  	'class': 'my-title form-control',
-  	'placeholder': 'Enter the title',
-  	}
-  	),
-  	)
-  
-  	content = forms.CharField(
-  	label='내용',
-  	widget=forms.Textarea(
-  	attrs={
-  	'class': 'my-content form-control',
-  	'placeholder': 'Enter the content',
-  	'rows : 5',
-  	'cols' : 50,
-  	}
-  	),
-  	error_messages={
-  	'required': 'Please enter your content'
-  	}
+      title = forms.CharField(
+      label='제목',
+      widget=forms.TextInput(
+      attrs={
+          'class': 'my-title form-control',
+          'placeholder': 'Enter the title',
+      }
+      ),
   )
-  	
-  	class Meta:
-  	model = Article
-  	fields = '__all__'
+      content = forms.CharField(
+          label='내용',
+          widget=forms.Textarea(
+          attrs={
+              'class': 'my-content form-control',
+              'placeholder': 'Enter the content',
+              'rows' : 5,
+              'cols' : 50,
+      }
+      ),
+      error_messages={
+          'required': 'Please enter your content'
+      }
+      )
+      class Meta:
+          model = Article
+          fields = '__all__'
   ```
-
   
-
+  
+  
 - Django Bootstrap Library
 
   - pip install django-bootstrap-v5
@@ -329,6 +326,38 @@ def update(request, pk):
   </html>
   ```
 
+  - 에러메시지 with bootstrap alert 컴포넌트
+  
+  ```html
+  #articles/create.html
+  
+  {% extends 'base.html' %}
+  
+  {% block content %}
+    <h1>CREATE</h1>
+    <hr>
+    <form action="{% url 'articles:create' %}" method="POST">
+      {% csrf_token %}
+      {% for field in form}
+        {% if field.errors %}
+        	{% for error in field.errors %}
+        		<div class = "alert alert-warning">
+                  {{error|escape}}
+        </div>
+        {% endfor %}
+      {% endif %}
+      	{{field.title.label_tag}}
+      	{{field}}
+      {% endfor %}
+      <input type="submit">
+          
+    </form>
+  <a href="{% url 'articles:index' %}">back</a>
+  {% endblock content %}
+  ```
+  
+  
+  
   ```
   # update.html
   {% extends 'base.html' %}
@@ -346,6 +375,5 @@ def update(request, pk):
   {% endblock content %}
   
   ```
-
   
-
+  
