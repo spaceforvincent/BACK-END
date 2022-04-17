@@ -270,7 +270,7 @@ def comments_create(request, pk):
         article = get_object_or_404(Article, pk=pk)
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
+            comment = comment_form.save(commit=False) #아직 데이터베이스에 저장되지 않은 인스턴스를 반환, 객체에 대한 사용자 지정처리를 수행할 때 유용
             comment.article = article #외래키 1
             comment.user = request.user #외래키 2
             comment.save()
@@ -430,13 +430,45 @@ class Comment(models.Model):
 - accounts/models.py
 
 ```python
+#관리자 권한과 함께 완전한 기능을 갖춘 user모델을 구현하는 기본 클래스인 AbstractUser을 상속받아 새로운 User모델 작성
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class User(AbstractUser):
     pass
+
+#settings.py
+#기존에 Django가 사용하는 User모델이었던 auth 앱의 User 모델을 accounts 앱의 User모델을 사용하도록 변경
+
+AUTH_USER_MODEL = 'accounts.User'
 ```
+
+- admin.py에 model 등록
+
+```
+#articles/admin.py
+from django.contrib import admin
+from .models import Article, Comment
+
+# Register your models here.
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'title', 'content', 'created_at', 'updated_at',)
+
+
+admin.site.register(Article, ArticleAdmin)
+admin.site.register(Comment)
+
+#accounts/admin.py
+#Custom User 모델 등록
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+
+admin.site.register(User, UserAdmin)
+```
+
+
 
 - python manage.py <u>makemigrations</u> 후 migrations/0001_initial.py 생성 확인
 
@@ -457,31 +489,6 @@ class User(AbstractUser):
 - python manage.py shell_plus (이곳에서 DB API 사용 가능, shell 종료하려면 exit() 입력) 
 
 - python manage.py createsuperuser (관리자 계정 생성)
-
-- <u>admin.py에 model 등록</u>
-
-```
-#articles/admin.py
-from django.contrib import admin
-from .models import Article, Comment
-
-# Register your models here.
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'title', 'content', 'created_at', 'updated_at',)
-
-
-admin.site.register(Article, ArticleAdmin)
-admin.site.register(Comment)
-
-#accounts/admin.py
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
-
-admin.site.register(User, UserAdmin)
-
-
-```
 
 
 

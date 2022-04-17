@@ -151,8 +151,42 @@ def logout(request) :
 
 - 회원가입(UserCreationForm)
   - 주어진 username과 password로 권한이 없는 새 user를 생성하는 ModelForm
+  
+  - User 모델 대체하기
+  
+    - 일부 프로젝트에서는 Django의 내장 User모델이 제공하는 인증 요구사항이 적절하지 않을 수 있음
+  
+    - Django는 User을 참조하는 데 사용하는 <u>AUTH_USER_MODEL</u> 값을 제공하여, <u>default user model을 재정의(override)</u>할 수 있도록 함 (AUTH_USER_MODEL은 프로젝트가 진행되는 동안 변경할 수 없음)
+  
+    - Django는 새 프로젝트를 시작하는 경우 기본 사용자 모델이 충분하더라도, 커스텀 유저 모델을 설정하는 것을 강력하게 권장 (단, 프로젝트의 모든 migrations 혹은 첫 migrate를 실행하기 전에 이 작업을 마쳐야 함)
+  
+    - 프로젝트 중간에 진행했다면 데이터베이스를 초기화한 후 마이그레이션 진행
+  
+      (db.sqlite3 파일 삭제 -> 파일 명에 숫자 붙은 migrations 파일 모두 삭제)
+  
+      (오류 날 경우 pycache도 삭제하고 makemigrations -> migrate 진행)
 
-```
+```python
+#accounts/models.py
+#관리자 권한과 함께 완전한 기능을 갖춘 user모델을 구현하는 기본 클래스인 AbstractUser을 상속받아 새로운 User모델 작성
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+	pass
+
+#settings.py
+#기존에 Django가 사용하는 User모델이었던 auth 앱의 User 모델을 accounts 앱의 User모델을 사용하도록 변경
+
+AUTH_USER_MODEL = 'accounts.User'
+
+#accounts/admin.py
+#admin site에 Custom User 모델 등록
+from django contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+
+admin.site.register(User, UserAdmin)
+
 #accounts/forms.py
 
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -183,6 +217,7 @@ def signup(request):
     }
 
     return render(request, 'accounts/signup.html', context)
+
 
 ```
 
@@ -263,3 +298,6 @@ def change_password(request):
     return render(request, 'accounts/change_password.html', context)
 ```
 
+
+
+- 

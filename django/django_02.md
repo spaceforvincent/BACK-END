@@ -18,24 +18,31 @@
 
   - But, ORM만으로 완전한 서비스를 구현하기 어려울 수 있음
 
+  - 우리는 <u>DB를 객체로 조작</u>하기 위해 ORM을 사용한다고 볼 수 있음.
+
     
 
 - Models.py 작성 (어떠한 타입의 DB컬럼을 정의할 것인가?)
 
-```
+```python
 #articles/models.py
 class Article(models.Model): #테이블
 	#CharField : 길이의 제한이 있는 문자열, max_length는 필수 인자
 	title = models.CharField(max_length=10) #필드 
 	#TextField : 글자의 수가 많을 때 사용
 	content = models.TextField() #필드
+	created_at = models.DateTimeField(auto_now_add=True) #최초생성일자
+	updated_at = models.DateTimeField(auto_now=True) #최종 수정일자 갱신
+	
+    #각각의 object가 사람이 읽을 수 있는 문자열을 반환하도록 함
+	def __str(self):
+		return self.title
+	
 ```
-
-*DateField's options : auto_now_add(최초 생성일자), auto_now(최종 수정일자)
 
 ###  Migrations
 
-- Django가 Model에 생긴 변화를 반영하는 기법
+- Django가 <u>Model에 생긴 변화를 반영</u>하는 기법
 
   - **makemigrations** : model을 변경한 것에 기반한 <u>새로운 설계도를 만들 때</u> 사용
   - **migrate** : <u>설계도를 실제 DB에 반영</u>, 변경사항 동기화
@@ -81,14 +88,15 @@ $ python manage.py shell_plus
       article = Article()
       article.title = 'first'
       article.content = 'django!'
-      article.save()
+      article.save() #객체를 데이터베이스에 저장
+      #단순히 모델을 인스턴스화하는 것은 db에 영향을 미치지 않기 때문에 반드시 save()가 필요!
       ```
 
-  - 초기값과 함께 인스턴스 생성
+  - 초기값과 함께 인스턴스 생성(권장)
 
     - ```
       article = Article(title='second',content='django!')
-      article.save()
+      article.save() #객체를 데이터베이스에 저장
       ```
 
   - QuerySet API - create() 사용
@@ -98,15 +106,19 @@ $ python manage.py shell_plus
       Article.objects.create(title='third', content = 'django!!!')
       ```
 
-      
+
+
 
 - **Read** 
 
-  - Article.objects.all() : 현재 QuerySet의 복사본 반환(리스트 형태)
+  - Article.objects.all() : 현재 <u>QuerySet의 복사본 반환</u>(리스트 형태)
 
   - Article.objects.get() : 주어진 lookup 매개변수와 일치하는 객체 반환(pk와 같이 고유성을 보장하는 조회에서 사용) (딕셔너리의 요소 하나를 반환)
 
-  - Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 새 QuerySet 반환
+    - 객체를 찾을 수 없으면 DoesNotExist 예외를 발생시킴
+    - 둘 이상의 객체를 찾으면 MultipleObjectsReturned 예외를 발생시킴
+
+  - Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 <u>새 QuerySet 반환</u>
 
     - Field lookups
 
@@ -121,9 +133,9 @@ $ python manage.py shell_plus
 
 ```
 #UPDATE articles SET title='byebye' WHERE id=1;
-article = Article.objects.get(pk=1)
-article.title = 'byebye'
-article.save()
+article = Article.objects.get(pk=1) #article 인스턴스 객체
+article.title = 'byebye' #인스턴스 객체 변수의 값 변경
+article.save() #저장
 ```
 
 
@@ -132,6 +144,7 @@ article.save()
 
 ```
 #save 필요 x
+article = Article.objects.get(pk=1)
 article.delete()
 ```
 
@@ -167,6 +180,9 @@ article.delete()
   
 - admin.py는 관리자 사이트에 Article 객체가 관리자 인터페이스를 가지고 있다는 것을 알려주는 것
 
+- ModelAdmin options
+
+  - list_display : models.py에서 정의한 각각의 속성들의 값을 admin 페이지에 출력하도록 설정
 
 
 
@@ -179,6 +195,12 @@ article.delete()
 
 - redirect() : 새 URL로 요청을 다시 보냄
 
+  - 브라우저는 현재 경로에 따라 전체 URL 자체를 재구성
+  - 사용가능한 인자
+    - model
+    - view_name
+    - absolute or relative URL
+  
   ```
   def create(request):
   	title = request.POST.get('title')
@@ -186,7 +208,7 @@ article.delete()
   	
   	article = Article(title=title, content=content) #CREATE
   	article.save()
-  	return redirect('articles:index')
+  	return redirect('articles:detail', article.pk)
   ```
-
+  
   
