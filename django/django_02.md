@@ -118,13 +118,28 @@ $ python manage.py shell_plus
     - 객체를 찾을 수 없으면 DoesNotExist 예외를 발생시킴
     - 둘 이상의 객체를 찾으면 MultipleObjectsReturned 예외를 발생시킴
 
-  - Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 <u>새 QuerySet 반환</u>
+    > get 방식의 문제점과 사용이유
 
-    - Field lookups
+    - 100이라는 pk 값이 들어오는 경우에 500오류라고 개발자 오류라고 ERROR가 발생한다. 하지만 사용자가 없어서 100번째 글이 아직 안 적혀서 뜨는거지 나의 잘못이라고 할 수 없다.
 
-    ```django
+    - 즉, url이 없어서 그런거다. 개발자 잘못이 아니라는 점을 표현하고 싶어서 get_object_or_404를 쓴다.
+
+    > get_object_or_404 쓰는법
+
+    ```python
+  from django.shortcuts import render, redirect, get_object_or_404
+    
+  article = get_object_or_404(Article, pk=pk)
+    # object를 가져오거나 404를 가져온다. 즉, 없는 url를 보낸 경우를 알 수 있다.
+  ```
+    
+- Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 <u>새 QuerySet 반환</u>
+  
+  - Field lookups
+  
+  ```django
     Article.objects.filter(pk__gt=2)
-    Article.objects.filter(content__contains='ja')
+  Article.objects.filter(content__contains='ja')
     ```
 
     

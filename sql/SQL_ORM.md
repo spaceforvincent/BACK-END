@@ -121,7 +121,7 @@
       ```sql
    -- sql
    UPDATE users_user
-   SET first_name='철수',
+   SET first_name='철수'
    WHERE rowid=102;
       ```
 
