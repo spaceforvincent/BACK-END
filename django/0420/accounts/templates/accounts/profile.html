@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ user.username }} 프로필</h1>
+  <hr>
+  <h2>작성한 글 모음</h2>
+  {% for article in user.article_set.all %}
+    <p>{{ article.title }}</p>
+  {% endfor %}
+  <h2>작성한 댓글 모음</h2>
+  {% for comment in user.comment_set.all %}
+    <p>{{ comment.content }}</p>
+  {% endfor %}
+{% endblock content %}
