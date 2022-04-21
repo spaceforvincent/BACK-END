@@ -1,3 +1,49 @@
+- python -m venv venv
+- source venv/Scripts/activate
+- pip install django==3.2.12 (pip install -r requirements.txt)
+- django-admin startproject my_api .
+- python manage.py startapp articles
+- settings.py -> installed_app에 articles, django_seed, rest_framework, django_extensions 추가
+
+```
+pip install djangorestframework
+pip install django-extensions
+pip install django-seed
+```
+
+
+
+- urls.py(프로젝트)
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('articles.urls')),
+]
+```
+
+- urls.py(articles 앱)
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('articles/', views.article_list),
+    path('articles/<int:article_pk>',views.article_detail),
+    path('articles/<int:article_pk>/comments',views.comment_create),
+    path('comments/', views.comment_list),
+    path('comments/<int:comment_pk>',views.comment_detail),
+]
+
+```
+
+- articles/views.py
+
+```python
 from django.shortcuts import get_object_or_404, get_list_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -95,3 +141,68 @@ def comment_create(request, article_pk):
     if serializer.is_valid(raise_exception=True):
         serializer.save(article=article)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+```
+
+
+
+- articles/models.py
+
+```python
+from django.db import models
+
+# Create your models here.
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+
+
+
+- python manage.py <u>makemigrations</u> 후 migrations/0001_initial.py 생성 확인
+- python manage.py <u>migrate</u> (0001_initial.py를 실제 DB에 반영)
+- adminpage 혹은 shell_plus 혹은 python manage.py seed articles --number=... 활용해서 모델 구조에 맞는 데이터 생성
+
+
+
+- articles/serializers.py
+
+```python
+from rest_framework import serializers
+from .models import Article, Comment
+
+class ArticleListSerializer(serializers.ModelSerializer): #모든 게시글 정보를 반환하기 위한 ModelSerializer
+
+    class Meta:
+        model = Article
+        fields = ('id','title',)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ('article',)
+                
+class ArticleSerializer(serializers.ModelSerializer): #게시글 상세 정보를 반환 및 생성하기 위한 ModelSerializer
+
+    # comment_set = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
+    comment_set = CommentSerializer(many=True, read_only=True) #특정 게시글에 작성된 댓글 목록 출력하기
+    comment_count = serializers.IntegerField(source='comment_set.count',read_only = True) #특정 게시글에 작성된 댓글의 개수 구하기(serializer을 필드로 표현)
+    
+    class Meta:
+        model = Article
+        fields = '__all__'
+```
+
+
+

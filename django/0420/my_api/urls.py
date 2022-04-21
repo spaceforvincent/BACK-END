@@ -1,4 +1,4 @@
-"""crud URL Configuration
+"""my_api URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -18,6 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('articles/', include('articles.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('api/v1/', include('articles.urls')),
 ]

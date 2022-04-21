@@ -1,4 +1,4 @@
-# 보충 학습 (좋아요 기능 구현)
+# 보충 학습 (DRF)
 
 ## 시작하기
 
@@ -7,7 +7,7 @@
 2. 프로젝트 클론 받기
 
     ```bash
-    $ git clone https://lab.ssafy.com/s07/python/add-one-to-many.git
+    $ git clone https://lab.ssafy.com/s07/python/add-drf.git
     ```
 
 3. Visual Studio Code 열기
@@ -28,137 +28,195 @@
 
 ## 가이드
 
-시작하기 전에 회원가입/로그인 기능이 정상적으로 동작하는지 확인 해보세요.
+모델과 마이그레이션 파일은 사전에 정의되어 있습니다.
 
-### 좋아요 기능 구현하기
+시작하기 전에 DB migrate를 진행하고, 데이터베이스에 seed 데이터를 추가합니다.
 
-* 좋아요 기능 구현을 위해서는 M:N 관계 설정을 하여야 합니다. 테이블 예시는 아래와 같습니다.
+```bash
+$ python manage.py migrate
+$ python manage.py seed articles --number=20
+```
 
-  * articles_article
+### [필수] Article API 구현하기
 
-      | id   | title | content |
-      | ---- | ----- | ------- |
-      | 1    | 제목1   | 내용1   |
-      | 2    | 제목2    | 내용2      |
-      | 3    | 제목3 | 내용3    |
+#### Serializer 구현
 
-  * accounts_user
+1. Article QuerySet Serializer 
 
-      | id(PK) | username |
-      | ------ | -------- |
-      | 1      | 홍길동   |
-      | 2      | 김철수   |
-
-  * articles_article_like_users
-      
-      * 홍길동은 1, 2, 3글을 좋아요 눌렀습니다.
-      * 김철수는 1글만 좋아요 눌렀습니다.
-      * 1글은 홍길동, 김철수가 좋아요 눌렀습니다.
-      
-      | id     | article_id | user_id |
-      | ------ | ---------- | ------- |
-      | 1      | 1          | 1       |
-      | 2      | 2          | 1       |
-      | 3      | 3          | 1       |
-      | 4      | 1          | 2       |
-      
-
-* 게시글 목록 페이지에서 좋아요 링크를 생성합니다.
-
-* 좋아요 기능을 처리하는 view를 작성합니다.
-
-  * 해당 글에 좋아요를 눌렀는지 확인하고
-    * 좋아요를 눌렀다면, 제거를 해야 합니다.
-    * 좋아요를 누르지 않았다면, 생성을 해야합니다.
-
-  * 모든 처리가 완료되면 게시글 상세보기 페이지로 redirect합니다.
-
-* 게시글 목록 페이지에서 상황에 따라 좋아요 / 좋아요 취소 링크로 분기합니다.
-
-  
-
-1. 모델 설정
-
-    * User 모델과의 관계 설정입니다.
-
-    * 역참조(related_name)는 like_articles로 합니다.
-
-    ```python
-    class Article(models.Model):
-        user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-        like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
-    ```
-    
-    ```python
-    # 좋아요를 누른 모든 사람
-    article.like_users.all()
-    # 유저가 좋아요 누른 모든 글
-    user.like_articles.all()
-    ```
-
-2. 게시글 링크 만들기
-
-   * POST요청을 위해 form 태그를 활용합니다.
-
-3. URL 생성하기
-
-   ```text
-   /articles/article_pk/likes/
+   ```python
+   from rest_framework import serializers
+   from .models import Article
+   
+   class ArticleListSerializer(serializers.ModelSerializer):
+   
+       class Meta:
+           model = Article
+           fields = ('id', 'title',)
    ```
 
-4. view 함수 작성하기
+2. Article 객체 Serializer
 
-    * 아래의 메서드를 적절하게 활용합니다.
+   ```python
+   from rest_framework import serializers
+   
+   class ArticleSerializer(serializers.ModelSerializer):
+   
+       class Meta:
+           model = Article
+           fields = '__all__'
+   ```
 
-    ```python
-    # 좋아요를 누른 모든 사람
-    article.like_users.all()
-    # 추가
-    article.like_users.add(user)
-    # 제거
-    article.like_users.remove(user)
-    # 확인하기 1
-    user in article.like_users.all()
-    # 확인하기 2
-    article.like_users.filter(pk=user.pk).exists()
-    ```
+#### URL 패턴
 
-5. 게시글 목록에서 상황에 따른 분기하기
+| METHOD | URL                              | 기능         | Status code                    |
+| ------ | -------------------------------- | ------------ | ------------------------------ |
+| GET    | `/api/v1/articles/`              | 전체 글 조회 | 200<br />없는 경우 404         |
+| POST   | `/api/v1/articles/`              | 글 작성      | valid : 201<br />invalid : 400 |
+| GET    | `/api/v1/articles/<article_pk>/` | 특정 글 조회 | 200<br />없는 경우 404         |
+| PUT    | `/api/v1/articles/<article_pk>/` | 특정 글 수정 | 200<br />invalid : 400         |
+| DELETE | `/api/v1/articles/<article_pk>/` | 특정 글 삭제 | 204                            |
 
-### [선택] 팔로우 기능 구현하기
-
-* 프로필 기능은 구현되어 있습니다.
-
-* 팔로우 기능은 User 간의 M:N 관계입니다.
-
-  * accounts_user
-
-    | id(PK) | username |
-    | ------ | -------- |
-    | 1      | 홍길동   |
-    | 2      | 김철수   |
-
-  * accounts_user_followings
-
-    * 홍길동과 김철수는 서로 팔로우를 하였습니다.
-    
-    | id   | from_user_id | to_user_id |
-    | ---- | ------------ | ---------- |
-    | 1    | 1            | 2         |
-    | 2    | 2            | 1          |
-
-* 모델 설정은 아래와 같습니다.
-
-  * User 모델간의 관계 설정입니다. (`self`)
-  * 대칭 관계는 False로 설정합니다.
-    * 홍길동이 김철수를 팔로우하는 것과 김철수가 홍길동을 팔로우하는 것은 개별 행위입니다.
-  * 역참조(related_name)는 follwers로 합니다.
+* 프로젝트 `urls.py` 에 아래와 같이 정의합니다.
 
   ```python
-  class User(AbstractUser):
-      following = models.ManyToManyField('self', symmetrical=False, related_name='follwers')
+  from django.contrib import admin
+  from django.urls import path, include
+  
+  urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('api/v1/', include('articles.urls')),
+  ]
   ```
 
-* 프로필 페이지에서 팔로우 링크를 만들고 처리하는 로직을 작성 해보세요.
+* `articles` 앱 `urls.py`에 상세 URL을 정의합니다.
 
-  * view 함수 로직은 좋아요 기능을 참고하시면 도움이 됩니다.
+#### 기능 구현
+
+> 기능 구현시 API 클라이언트로 [postman](https://www.postman.com/)을 활용합니다.
+
+> Status code와 JSON 응답 형식을 참고하여 작성합니다.
+
+##### 전체 글 조회 
+
+* 상태코드 200을 반환합니다.
+
+* JSON 예시
+
+    ```json
+  [
+        {
+            "id": 1, 
+            "title": "제목1",
+            "content": "내용1"
+        }, 
+        {
+            "id": 2, 
+            "title": "제목2",
+            "content": "내용2"
+        }    
+    ]
+  ```
+
+##### 상세 글 조회
+
+* 상태코드 200을 반환합니다.
+
+* JSON 예시
+
+  ```JSON
+  {
+      "id": 1, 
+      "title": "제목1",
+      "content": "내용1",
+      "created_at": "1980-07-07T15:07:31+09:00",
+      "updated_at": "1980-07-07T15:07:31+09:00"
+  }
+  ```
+
+##### 글 생성
+
+
+  * 생성이 된다면, 상태코드 201을 반환합니다.
+
+  * JSON 예시
+
+    ```python
+    {
+        "id": 1, 
+        "title": "제목1",
+        "content": "내용1",
+        "created_at": "1980-07-07T15:07:31+09:00",
+        "updated_at": "1980-07-07T15:07:31+09:00"
+    }
+    ```
+
+  * 생성에 실패한다면, 상태코드 400을 반환합니다.
+
+  * JSON 예시
+
+    ```python
+    {
+        "title": [
+            "This field is required."
+        ],
+        "content": [
+            "This field is required."
+        ]
+    }
+    ```
+
+##### 글 삭제
+
+
+  * 상태코드 204를 반환합니다.
+
+  * JSON 예시
+
+    ```JSON
+    {
+        "delete": "데이터 1번이 삭제되었습니다."
+    }
+    ```
+
+##### 글 수정
+
+* 상태코드 200을 반환합니다.
+
+* JSON 예시
+
+  ```JSON
+  {
+      "id": 2,
+      "title": "1111",
+      "content": "222",
+      "created_at": "1987-08-31T05:20:35Z",
+      "updated_at": "2022-04-20T06:23:52.195728Z"
+  }
+  ```
+
+* 수정에 실패한다면, 상태코드 400을 반환합니다.
+
+* JSON 예시
+
+  ```JSON
+  {
+      "content": [
+          "This field is required."
+      ]
+  }
+  ```
+
+### [선택] 댓글 기능
+
+> 댓글 기능은 강의 자료를 참고하여 구성해보세요.
+
+#### URL 패턴
+
+| METHOD | URL                                       | 기능           | Status code                    |
+| ------ | ----------------------------------------- | -------------- | ------------------------------ |
+| GET    | `/api/v1/comments/`                       | 전체 댓글 조회 | 200<br />없는 경우 404         |
+| POST   | `/api/v1/articles/<article_pk>/comments/` | 댓글 작성      | valid : 201<br />invalid : 400 |
+| GET    | `/api/v1/comments/<comment_pk>/`          | 특정 댓글 조회 | 200<br />없는 경우 404         |
+| PUT    | `/api/v1/comments/<comment_pk>/`          | 특정 댓글 수정 | 200<br />invalid : 400         |
+| DELETE | `/api/v1/comments/<comment_pk>/`          | 특정 댓글 삭제 | 204                            |
+
