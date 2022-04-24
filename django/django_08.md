@@ -48,12 +48,15 @@
 - REpresentational State Transfer
 - API Server를 개발하기 위한 일종의 소프트웨어 설계방법론
 - 자원을 정의하고 자원에 대한 주소를 지정하는 전반적인 방법
+- URL을 통해서 해당 서버의 함수를 호출하는 것
+  - urls.py를 통해서 요청을 받아 views.py에 정의된 함수를 호출
+
 - REST 원리를 따르는 시스템을 RESTful이란 용어로 지칭함
 - 자원과 주소의 지정 방법
   - 자원(정보) : URI
+    -  명사로 구성 (ex: articles)
   - 행위 : HTTP Method (get, post, delete, put)
   - 표현 : json (javascript의 표기법을 따른 단순 문자열)
-
 - Build RESTful API
 
 |             | GET         | POST    | PUT         | DELETE      |

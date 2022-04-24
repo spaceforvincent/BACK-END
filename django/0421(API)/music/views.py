@@ -77,6 +77,7 @@ def music_list(request):
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def music_detail(request, music_pk):
+    
     music = get_object_or_404(Music, pk=music_pk)
     
     if request.method == 'GET':
