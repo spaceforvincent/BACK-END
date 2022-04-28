@@ -7,7 +7,7 @@
 - settings.py -> installed_app에 articles, accounts 추가
 - urls.py(프로젝트)
 
-```
+```python
 from django.contrib import admin
 from django.urls import path, include
 
@@ -25,7 +25,6 @@ urlpatterns = [
 from django.urls import path
 from . import views
 
-
 app_name = 'articles'
 urlpatterns = [
     path('', views.index, name='index'),
@@ -37,12 +36,11 @@ urlpatterns = [
     path('<int:article_pk>/comments/<int:comment_pk>/delete', views.comments_delete, name='comments_delete'), # GET / POST
     
 ]
-
 ```
 
 - urls.py (accounts 앱)
 
-```
+```python
 from django.urls import path
 from . import views
 
