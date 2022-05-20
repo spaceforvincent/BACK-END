@@ -1,0 +1,135 @@
+[
+    {
+        "pk": 28,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Action"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Adventure"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Animation"
+        }
+    },
+    {
+        "pk": 35,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Comedy"
+        }
+    },
+    {
+        "pk": 80,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Crime"
+        }
+    },
+    {
+        "pk": 99,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Documentary"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Drama"
+        }
+    },
+    {
+        "pk": 10751,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Family"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Fantasy"
+        }
+    },
+    {
+        "pk": 36,
+        "model": "movies.genre",
+        "fields": {
+            "name": "History"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Horror"
+        }
+    },
+    {
+        "pk": 10402,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Music"
+        }
+    },
+    {
+        "pk": 9648,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Mystery"
+        }
+    },
+    {
+        "pk": 10749,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Romance"
+        }
+    },
+    {
+        "pk": 878,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Science Fiction"
+        }
+    },
+    {
+        "pk": 10770,
+        "model": "movies.genre",
+        "fields": {
+            "name": "TV Movie"
+        }
+    },
+    {
+        "pk": 53,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Thriller"
+        }
+    },
+    {
+        "pk": 10752,
+        "model": "movies.genre",
+        "fields": {
+            "name": "War"
+        }
+    },
+    {
+        "pk": 37,
+        "model": "movies.genre",
+        "fields": {
+            "name": "Western"
+        }
+    }
+]

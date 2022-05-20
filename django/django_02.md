@@ -127,20 +127,21 @@ $ python manage.py shell_plus
     > get_object_or_404 쓰는법
 
     ```python
-  from django.shortcuts import render, redirect, get_object_or_404
-    
-  article = get_object_or_404(Article, pk=pk)
-    # object를 가져오거나 404를 가져온다. 즉, 없는 url를 보낸 경우를 알 수 있다.
-  ```
-    
+    from django.shortcuts import render, redirect, get_object_or_404
+    article = get_object_or_404(Article, pk=pk)
+    #object를 가져오거나 404를 가져온다. 즉, 없는 url를 보낸 경우를 알 수 있다.
+    ```
+  
+  
+  
 - Article.objects.filter() : 주어진 lookup 매개변수와 일치하는 객체를 포함하는 <u>새 QuerySet 반환</u>
   
   - Field lookups
   
   ```django
-    Article.objects.filter(pk__gt=2)
+  Article.objects.filter(pk__gt=2)
   Article.objects.filter(content__contains='ja')
-    ```
+  ```
 
     
 
