@@ -1,5 +1,5 @@
 - python -m venv venv
-- source venv/Scripts/activate
+- source venv/Scripts/activate (mac : source/venv/bin/activate)
 - pip install django==3.2.12 (pip install -r requirements.txt)
 - django-admin startproject my_api .
 - python manage.py startapp articles
