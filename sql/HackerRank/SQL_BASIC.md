@@ -188,7 +188,7 @@ WHERE CITY REGEXP '^[^aeiou]' OR CITY REGEXP '[^aeiou]$'
 
 10. Query the list of *CITY* names from **STATION** that *do not start* with vowels and *do not end* with vowels. Your result cannot contain duplicates.
 
-```
+```sql
 SELECT DISTINCT CITY FROM STATION WHERE LEFT(CITY,1) NOT IN ('a','e','i','o','u') AND RIGHT(CITY,1) NOT IN ('a','e','i','o','u')
 ```
 
@@ -214,8 +214,52 @@ SELECT ROUND(SUM(LAT_N),2), ROUND(SUM(LONG_W),2) FROM STATION
 
 13. Query the sum of *Northern Latitudes* (*LAT_N*) from **STATION** having values greater than 38.7880 and less than 137.2345. Truncate your answer to 4 decimal places.
 
-```python
+```sql
 SELECT TRUNCATE(SUM(LAT_N),4) FROM STATION WHERE LAT_N > 38.7880 AND LAT_N < 137.2345
+```
+
+
+
+14. Query the *Western Longitude* (*LONG_W*)where the smallest *Northern Latitude* (*LAT_N*) in **STATION** is greater than 38.7780. Round your answer to 4 decimal places.
+
+```sql
+select round(long_w, 4)
+from station
+where lat_n > 38.7780
+order by lat_n asc limit 1
+```
+
+
+
+15. Consider and to be two points on a *2D* plane.
+
+    -  happens to equal the minimum value in *Northern Latitude* (*LAT_N* in **STATION**).
+    -  happens to equal the minimum value in *Western Longitude* (*LONG_W*in **STATION**).
+    -  happens to equal the maximum value in *Northern Latitude* (*LAT_N* in **STATION**).
+    -  happens to equal the maximum value in *Western Longitude*(*LONG_W* in **STATION**).
+
+    Query the [Manhattan Distance](https://xlinux.nist.gov/dads/HTML/manhattanDistance.html) between points and and round it to a scale of 4 decimal places.
+
+```sql
+select round(abs(max(lat_n) - min(lat_n)) + abs(max(long_w) - min(long_w)), 4)
+from station
+```
+
+
+
+16. Query the [Euclidean Distance](https://en.wikipedia.org/wiki/Euclidean_distance) between points and and *format your answer* to display 4 decimal digits.
+
+```sql
+select round(sqrt(power(max(lat_n) - min(lat_n),2) + power(max(long_w) - min(long_w),2)),4)
+from station
+```
+
+
+
+17. A *[median](https://en.wikipedia.org/wiki/Median)* is defined as a number separating the higher half of a data set from the lower half. Query the *median* of the *Northern Latitudes* (*LAT_N*) from **STATION** and round your answer to 4 decimal places.
+
+```oracle
+SELECT ROUND(MEDIAN(LAT_N),4) FROM STATION;
 ```
 
 
