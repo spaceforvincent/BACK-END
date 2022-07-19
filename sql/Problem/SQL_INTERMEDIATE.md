@@ -94,3 +94,101 @@ from city inner join country on city.countrycode = country.code
 group by country.continent
 ```
 
+
+
+```
+
+//customers
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
++-------------+---------+
+
+//orders
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| customerId  | int  |
++-------------+------+
+```
+
+1. Write an SQL query to report all customers who never order anything.
+
+```sql
+select customers.name as Customers
+from customers left join orders on customers.id = orders.customerid
+where orders.id is null
+```
+
+
+
+```
++----+-------+--------+-----------+
+| id | name  | salary | managerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | Null      |
+| 4  | Max   | 90000  | Null      |
++----+-------+--------+-----------+
+```
+
+1. Write an SQL query to find the employees who earn more than their managers.
+
+```sql
+select employee.name as Employee
+from employee inner join employee as manager on employee.managerid = manager.id
+where employee.salary > manager.salary 
+```
+
+
+
+
+
+```
++----+------------+-------------+
+| id | recordDate | temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+```
+
+
+
+1. Write an SQL query to find all dates' `Id` with higher temperatures compared to its previous dates (yesterday).
+
+```sql
+select today.id
+from weather as today inner join weather as yesterday on today.recordDate = DATE_ADD(yesterday.recordDate, INTERVAL 1 DAY)
+where today.temperature > yesterday.temperature
+```
+
+
+
+![](https://s3.amazonaws.com/hr-challenge-images/12892/1443818693-b384c24e35-2.png)
+
+1. Two pairs *(X1, Y1)* and *(X2, Y2)* are said to be *symmetric* *pairs* if *X1 = Y2* and *X2 = Y1*.
+
+   Write a query to output all such *symmetric* *pairs* in ascending order by the value of *X*. List the rows such that *X1 ≤ Y1*.
+
+```sql
+select x,y
+from functions
+where x = y
+group by x, y
+having count(*) = 2
+
+UNION 
+
+select x_functions.x, x_functions.y
+from functions as x_functions inner join functions as y_functions on x_functions.y = y_functions.x and x_functions.x = y_functions.y
+where x_functions.x < x_functions.y
+order by x
+```
+
