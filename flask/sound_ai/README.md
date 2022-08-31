@@ -338,9 +338,7 @@ app.run(host='127.0.0.1', port=5000, debug=False)
 -   **API Server**를  **가볍게**  구현 할 수 있습니다.
 -  **Docker**나  **Kubernetes**를 이용해 여러 개의 컨테이너를 이용하여 스케쥴링이 용이 합니다.
 -  일단  **쉽고, 코드가 짧습니다.**  (매우 중요)
-```
-pip install flask-restx
-```
+
 ```
 //main.py
 
@@ -368,7 +366,7 @@ if  __name__ == "__main__":
 
 app.run(host='127.0.0.1', port=5000, debug=False)
 ```
-![api1](./assets/api1)
+![api1](./assets/api1.png)
 
 GET
 ```
@@ -400,7 +398,7 @@ if  __name__ == "__main__":
 
 app.run(host='127.0.0.1', port=5000, debug=False)
 ```
-![get1](./assets/get)
+![get1](./assets/get.png)
 
 POST
 ```
@@ -465,7 +463,7 @@ if  __name__ == "__main__":
 
 app.run()
 ```
-![post1](./assets/post1)
-![post2](./assets/post2)
+![post1](./assets/post1.png)
+![post2](./assets/post2.png)
 
 
