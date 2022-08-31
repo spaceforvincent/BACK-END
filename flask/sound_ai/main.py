@@ -1,33 +1,14 @@
-from datetime import datetime
- 
-from flask import Flask, render_template
- 
-app = Flask(__name__)
- 
-posts = [
-    {
-        'author': {
-            'username': 'test-user'
-        },
-        'title': '첫 번째 포스트',
-        'content': '첫 번째 포스트 내용입니다.',
-        'date_posted': datetime.strptime('2018-08-01', '%Y-%m-%d')
-    },
-    {
-        'author': {
-            'username': 'test-user'
-        },
-        'title': '두 번째 포스트',
-        'content': '두 번째 포스트 내용입니다.',
-        'date_posted': datetime.strptime('2018-08-03', '%Y-%m-%d')
-    },
-]
- 
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.html', posts=posts)
- 
-@app.route('/about')
-def about():
-  return render_template('about.html', title='About')
+from flask import Flask, jsonify 
+
+app = Flask(__name__)  # Flask 객체 선언, 파라미터로 어플리케이션 패키지의 이름을 넣어줌.
+
+@app.route('/population') 
+def population():  # GET 요청시 리턴 값에 해당 하는 dict를 JSON 형태로 반환
+	pop_info = {'Seoul' : 9598484, #
+	'Busan' : 3372399,
+	'Gyeonggi' : 13465837}
+	
+	return jsonify(pop_info) #json형태로 만듬
+
+if __name__ == "__main__":
+    app.run()
