@@ -376,7 +376,7 @@ if  __name__ == "__main__":
 app.run(host='127.0.0.1', port=5000, debug=False)
 ```
 
-![api1](./assets/api1.png)
+![api1](./assets/api1.PNG)
 
 GET
 
@@ -410,7 +410,7 @@ if  __name__ == "__main__":
 app.run(host='127.0.0.1', port=5000, debug=False)
 ```
 
-![get1](./assets/get.png)
+![get1](./assets/get.PNG)
 
 POST
 
@@ -478,5 +478,5 @@ if  __name__ == "__main__":
 app.run()
 ```
 
-![post1](./assets/post1.png)
-![post2](./assets/post2.png)
+![post1](./assets/post1.PNG)
+![post2](./assets/post2.PNG)
