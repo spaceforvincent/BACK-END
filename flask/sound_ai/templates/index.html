@@ -1,18 +1,42 @@
-{% extends 'layout.html' %}
- 
-{% block content %}
-<div>
-  <div>
-    {% for post in posts %}
-      <article>
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.content}}</p>
-        <div>
-          <p>{{ post.author.username }}</p>
-          <p>{{ post.date_posted.strftime('%Y-%m-%d') }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speech Recognition in Python</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" />
+</head>
+<body>
+<div id="speechContainer">
+    <h1>Say something!</h1>
+    <form method="post" enctype="multipart/form-data">
+        <br>
+    </form>
+
+    {% if transcript != "" %}
+        <div id="speechTranscriptContainer">
+            <h1>Transcript</h1>
+            <p id="speechText">{{ transcript }}</p>
+            {{msg}}
         </div>
-      </article>
-    {% endfor %}
-  </div>
+    {% endif %}
 </div>
-{% endblock %}
+</body>
+<script>
+    var myVar = "from Hashcode!!!"; // <-- 어떤 자바스크립트 변수를
+    (function ($) {
+        $.ajax({
+            url: "/post", // <-- 어떤 XMLHttpRequest 요청을 보낼때
+            type: "POST",
+            dataType: "html",
+            data: {
+                test: myVar // <-- 사용하면
+            }
+        }).done(function (response) { // <-- 서버가 받아서 처리하고
+            $('#res').text(response); // <-- 결과를 돌려줄 수 있음.
+        });
+    })(jQuery);
+</script>
+
+</script>
+</html>
